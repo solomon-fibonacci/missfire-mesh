@@ -30,7 +30,7 @@ module.exports = (async () => {
       { name: 'price', type: 'string' },
       { name: 'reduced_price', type: 'string', optional: true },
       { name: 'deal_price', type: 'string', optional: true },
-      { name: 'brand_name', type: 'string', facet: true },
+      { name: 'brand_name', type: 'string', facet: true, optional: true },
       { name: 'for_adults', type: 'bool' },
       { name: 'keywords', type: 'string[]' },
       { name: 'category', type: 'string', optional: true, facet: true },
@@ -86,17 +86,6 @@ module.exports = (async () => {
 
   console.log('Adding records: ');
 
-  // Bulk Import
-  // products.forEach((product) => {
-  //   // product.free_shipping = product.name.length % 2 === 1; // We need this to be deterministic for tests
-  //   // product.rating = (product.description.length % 5) + 1; // We need this to be deterministic for tests
-  //   product.categories.forEach((category, index) => {
-  //     product[`categories.lvl${index}`] = [
-  //       product.categories.slice(0, index + 1).join(' > '),
-  //     ];
-  //   });
-  // });
-
   try {
     const returnData = await typesense
       .collections('products')
@@ -106,6 +95,7 @@ module.exports = (async () => {
     console.log('Done indexing.');
 
     const failedItems = returnData.filter((item) => item.success === false);
+    console.log(':::>>>>', { failedItems });
     if (failedItems.length > 0) {
       throw new Error(
         `Error indexing items ${JSON.stringify(failedItems, null, 2)}`
@@ -114,6 +104,9 @@ module.exports = (async () => {
 
     return returnData;
   } catch (error) {
-    console.log(error);
+    console.log(
+      error.importResults.filter((item) => item.success === false),
+      '<<<<:::'
+    );
   }
 })();
