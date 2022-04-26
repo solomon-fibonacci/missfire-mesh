@@ -1,7 +1,6 @@
 require('dotenv').config();
 
 const Typesense = require('typesense');
-const Typesense = require('typesense');
 
 const searchCollection = 'products';
 
@@ -53,7 +52,7 @@ module.exports = (async () => {
 
   console.log('Populating index in Typesense');
 
-  const products = require('./data/ecommerce.json');
+  const products = require('./data/products.json');
 
   let reindexNeeded = false;
   try {
@@ -88,15 +87,15 @@ module.exports = (async () => {
   console.log('Adding records: ');
 
   // Bulk Import
-  products.forEach((product) => {
-    product.free_shipping = product.name.length % 2 === 1; // We need this to be deterministic for tests
-    product.rating = (product.description.length % 5) + 1; // We need this to be deterministic for tests
-    product.categories.forEach((category, index) => {
-      product[`categories.lvl${index}`] = [
-        product.categories.slice(0, index + 1).join(' > '),
-      ];
-    });
-  });
+  // products.forEach((product) => {
+  //   // product.free_shipping = product.name.length % 2 === 1; // We need this to be deterministic for tests
+  //   // product.rating = (product.description.length % 5) + 1; // We need this to be deterministic for tests
+  //   product.categories.forEach((category, index) => {
+  //     product[`categories.lvl${index}`] = [
+  //       product.categories.slice(0, index + 1).join(' > '),
+  //     ];
+  //   });
+  // });
 
   try {
     const returnData = await typesense
